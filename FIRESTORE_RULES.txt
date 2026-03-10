@@ -1,0 +1,40 @@
+// ============================================================
+// FIRESTORE SECURITY RULES — paste into Firebase Console
+// Console → Firestore → Rules tab → Replace all → Publish
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── User data (assets / liabilities) ──
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // ── Blogs ──
+    // Anyone can read, only admin can write
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.email == 'kasiviswa@hotmail.com';
+    }
+
+    // ── Products ──
+    // Anyone can read, only admin can write
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null
+        && request.auth.token.email == 'kasiviswa@hotmail.com';
+    }
+
+    // ── Contacts ──
+    // Anyone can submit, only admin can read/manage
+    match /contacts/{msgId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null
+        && request.auth.token.email == 'kasiviswa@hotmail.com';
+    }
+
+  }
+}

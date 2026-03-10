@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WealthMap</title>
+<script>
+// GitHub Pages SPA redirect trick
+// Converts /wealthmap/blogs → /wealthmap/?p=/blogs then index.html reads it back
+var seg = 1; // number of path segments in repo name (1 = /wealthmap)
+var l = window.location;
+var path = l.pathname.slice(1).split('/').slice(seg).join('/');
+var search = l.search ? l.search.slice(1) : '';
+var hash = l.hash ? l.hash.slice(1) : '';
+
+// Map clean paths to .html files
+var routes = {
+  '': '',
+  'blogs': 'blogs.html',
+  'blog': 'blog.html',
+  'calculator': 'calculator.html',
+  'products': 'products.html',
+  'product': 'product.html',
+  'about': 'about.html',
+  'contact': 'contact.html',
+  'login': 'login.html',
+  'dashboard': ''
+};
+
+var base = path.split('?')[0].split('#')[0];
+var target = routes.hasOwnProperty(base) ? routes[base] : null;
+
+if (target !== null) {
+  var newUrl = l.protocol + '//' + l.host + '/wealthmap/' + target;
+  if (search) newUrl += '?' + search;
+  if (hash)   newUrl += '#' + hash;
+  l.replace(newUrl);
+} else {
+  l.replace('/wealthmap/');
+}
+</script>
+</head>
+<body>
+<p style="font-family:sans-serif;text-align:center;padding:60px;color:#666">Redirecting…</p>
+</body>
+</html>
