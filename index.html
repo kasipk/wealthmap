@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WealthMap — Master Your Financial Future</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/wealthmap/style.css">
+<link rel="stylesheet" href="/style.css">
 <style>
 /* PAGE TRANSITION */
 body { opacity: 0; animation: pagein .45s var(--ease) .05s forwards; }
@@ -530,13 +530,30 @@ function fmtDate(ts){ if(!ts) return 'Finance Tips'; try{ const d=ts.toDate?ts.t
   transition: opacity .2s .08s;
 }
 .dash-sidebar:hover .sb-act-lbl { opacity: 1; }
+/* ── GOLD TICKER ── */
+.gold-ticker {
+  display: flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg, rgba(201,168,76,.12), rgba(201,168,76,.06));
+  border: 1.5px solid rgba(201,168,76,.3);
+  border-radius: 100px; padding: 6px 16px;
+  font-family: 'Manrope', sans-serif;
+}
+.gt-ico { font-size: .9rem; }
+.gt-lbl { font-size: .65rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.gt-price { font-family: 'Manrope', sans-serif; font-size: .9rem; font-weight: 800; color: var(--gold); letter-spacing: -.3px; }
+.gt-unit { font-size: .62rem; color: var(--muted); }
+.gt-status { width: 7px; height: 7px; border-radius: 50%; background: #d1d5db; flex-shrink: 0; }
+.gt-status.live { background: #16a34a; box-shadow: 0 0 0 2px rgba(22,163,74,.2); animation: pulse 2s infinite; }
+.gt-status.stale { background: #d97706; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
 /* Top bar — format + export (sits at top right, NOT sticky, just inside dash-main) */
 .dash-topbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   padding: 0 2px;
 }
 .tb-btn {
@@ -563,29 +580,30 @@ function fmtDate(ts){ if(!ts) return 'Finance Tips'; try{ const d=ts.toDate?ts.t
 .fmt-opt.active { background:rgba(201,168,76,.1); color:var(--gold); font-weight:700; }
 
 /* ── MAIN — shifted right to leave room for sidebar ── */
-.dash-wrap { padding-top: 24px; }
-.dash-main { max-width: 1200px; margin: 0 auto 0 80px; padding: 0 28px 80px; }
+.dash-wrap { padding-top: 16px; }
+.dash-main { max-width: 1200px; margin: 0 auto 0 80px; padding: 0 20px 40px; }
 .page { display:none; } .page.active { display:block; }
 #pg-goals { padding-top:4px; }
 
 /* ── KPI ── */
-.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:20px; }
-.kpi { background:#fff; border-radius:18px; border:1.5px solid var(--brd); padding:20px 22px; position:relative; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.04); transition:all .3s ease; cursor:default; }
+.kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px; }
+.kpi { background:#fff; border-radius:16px; border:1.5px solid var(--brd); padding:14px 16px; position:relative; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.04); transition:all .3s ease; cursor:default; }
 .kpi:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.08); border-color:rgba(201,168,76,.3); }
 .kpi-accent { position:absolute; top:0; left:0; width:3px; height:100%; }
-.kpi-lbl { font-size:.6rem; letter-spacing:1.8px; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:9px; }
-.kpi-val { font-family:'Playfair Display',serif; font-size:1.65rem; font-weight:700; color:var(--navy); line-height:1; }
+.kpi-lbl { font-size:.58rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:6px; }
+.kpi-val { font-family:'Manrope',sans-serif; font-size:1.55rem; font-weight:800; color:var(--navy); line-height:1; letter-spacing:-0.5px; }
+.kpi-val .kpi-sym { font-size:.95rem; font-weight:700; color:var(--gold); vertical-align:top; margin-top:3px; display:inline-block; font-family:'Manrope',sans-serif; }
 .kpi-val.neg { color:var(--red); }
-.kpi-foot { display:flex; align-items:center; gap:6px; margin-top:9px; }
-.kpi-badge { font-size:.6rem; font-weight:700; padding:2px 8px; border-radius:100px; }
-.kpi-sub { font-size:.65rem; color:var(--muted); }
+.kpi-foot { display:flex; align-items:center; gap:6px; margin-top:7px; }
+.kpi-badge { font-size:.58rem; font-weight:700; padding:2px 8px; border-radius:100px; }
+.kpi-sub { font-size:.62rem; color:var(--muted); }
 
 /* ── CARDS ── */
-.cg2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-.cg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
-.cg-wide { display:grid; grid-template-columns:1.5fr 1fr; gap:16px; margin-bottom:16px; }
-.card { background:#fff; border-radius:16px; border:1.5px solid var(--brd); padding:18px 20px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
-.card-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.cg2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.cg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+.cg-wide { display:grid; grid-template-columns:1.5fr 1fr; gap:12px; margin-bottom:12px; }
+.card { background:#fff; border-radius:14px; border:1.5px solid var(--brd); padding:14px 16px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+.card-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .card-title { font-family:'Playfair Display',serif; font-size:.93rem; font-weight:700; color:var(--navy); }
 .card-sub { font-size:.65rem; color:var(--muted); margin-top:2px; }
 .card-badge { font-size:.59rem; font-weight:700; padding:2px 8px; border-radius:100px; background:var(--bg2); color:var(--txt2); }
@@ -666,7 +684,8 @@ function fmtDate(ts){ if(!ts) return 'Finance Tips'; try{ const d=ts.toDate?ts.t
 /* ── MODAL ── */
 .overlay { position:fixed; inset:0; background:rgba(26,26,46,.45); backdrop-filter:blur(8px); z-index:800; display:none; align-items:center; justify-content:center; }
 .overlay.open { display:flex; }
-.modal { background:#fff; border-radius:20px; padding:32px; width:480px; max-width:95vw; box-shadow:0 40px 100px rgba(0,0,0,.15); animation:mpop .3s ease; }
+.modal { background:#fff; border-radius:20px; padding:28px; width:500px; max-width:95vw; box-shadow:0 40px 100px rgba(0,0,0,.15); animation:mpop .3s ease; }
+.gold-calc-pill { background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.08)); border:1.5px solid rgba(201,168,76,.3); border-radius:100px; padding:6px 14px; font-family:'Manrope',sans-serif; font-size:.8rem; font-weight:700; color:var(--gold); white-space:nowrap; flex-shrink:0; }
 @keyframes mpop { from{transform:scale(.88) translateY(16px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
 .mhd { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 .mt { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; color:var(--navy); }
@@ -760,16 +779,27 @@ function fmtDate(ts){ if(!ts) return 'Finance Tips'; try{ const d=ts.toDate?ts.t
 <div class="dash-wrap">
 <div class="dash-main" id="dashMain">
 
-  <!-- Top action bar: export + format -->
+  <!-- Top action bar: gold price ticker | export + format on right -->
   <div class="dash-topbar">
-    <button class="tb-btn" onclick="exportExcel()">📤 Export</button>
-    <div class="fmt-wrap">
-      <button class="fmt-btn" onclick="toggleFmtDd()"><span id="fmtLabel">₹ Lakhs</span> ▾</button>
-      <div class="fmt-dd" id="fmtDd">
-        <div class="fmt-opt active" onclick="setFmt('L',this)">₹ Value in Lakhs</div>
-        <div class="fmt-opt" onclick="setFmt('Cr',this)">₹ Value in Crores</div>
-        <div class="fmt-opt" onclick="setFmt('K',this)">₹ Value in Thousands</div>
-        <div class="fmt-opt" onclick="setFmt('actual',this)">₹ Actual Value</div>
+    <!-- Gold live ticker -->
+    <div class="gold-ticker" id="goldTicker">
+      <span class="gt-ico">🥇</span>
+      <span class="gt-lbl">22K Gold</span>
+      <span class="gt-price" id="gtPrice">—</span>
+      <span class="gt-unit">/gm</span>
+      <span class="gt-status" id="gtStatus" title="Last updated"></span>
+    </div>
+    <!-- Right controls -->
+    <div style="display:flex;align-items:center;gap:8px">
+      <button class="tb-btn" onclick="exportExcel()">📤 Export</button>
+      <div class="fmt-wrap">
+        <button class="fmt-btn" onclick="toggleFmtDd()"><span id="fmtLabel">₹ Lakhs</span> ▾</button>
+        <div class="fmt-dd" id="fmtDd">
+          <div class="fmt-opt active" onclick="setFmt('L',this)">₹ Value in Lakhs</div>
+          <div class="fmt-opt" onclick="setFmt('Cr',this)">₹ Value in Crores</div>
+          <div class="fmt-opt" onclick="setFmt('K',this)">₹ Value in Thousands</div>
+          <div class="fmt-opt" onclick="setFmt('actual',this)">₹ Actual Value</div>
+        </div>
       </div>
     </div>
   </div>
@@ -782,13 +812,20 @@ function fmtDate(ts){ if(!ts) return 'Finance Tips'; try{ const d=ts.toDate?ts.t
       <div class="kpi"><div class="kpi-accent" style="background:var(--red)"></div><div class="kpi-lbl">Total Liabilities</div><div class="kpi-val" style="color:var(--red)" id="tlVal">—</div><div class="kpi-foot"><span class="kpi-badge" style="background:var(--rbg);color:var(--red)" id="lcBadge">0 entries</span></div></div>
       <div class="kpi"><div class="kpi-accent" style="background:var(--gold)"></div><div class="kpi-lbl">Debt-to-Asset</div><div class="kpi-val" style="color:var(--gold)" id="drVal">—</div><div class="kpi-foot"><span class="kpi-badge" id="drBadge" style="background:var(--gbg);color:var(--green)">Healthy</span></div></div>
     </div>
+    <!-- Gold tracker summary — shown only if user has gold assets with grams -->
+    <div id="goldSummaryBar" style="display:none;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.04));border:1.5px solid rgba(201,168,76,.2);border-radius:12px;padding:10px 16px;margin-bottom:12px;display:none;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="font-size:.8rem;font-weight:700;color:var(--gold)">🥇 Gold Portfolio</span>
+      <span style="font-size:.76rem;color:var(--txt2)" id="goldTotalGrams">—</span>
+      <span style="font-size:.76rem;color:var(--txt2)" id="goldTotalValue">—</span>
+      <span style="font-size:.68rem;color:var(--muted)" id="goldLastUpdate">—</span>
+    </div>
     <div class="cg-wide">
-      <div class="card"><div class="card-hd"><div><div class="card-title">Net Worth Composition</div><div class="card-sub">Assets vs Liabilities</div></div></div><canvas id="compositionChart" height="190"></canvas></div>
-      <div class="card"><div class="card-hd"><div><div class="card-title">Asset Allocation</div><div class="card-sub">By category</div></div></div><canvas id="allocationChart" height="190"></canvas></div>
+      <div class="card"><div class="card-hd"><div><div class="card-title">Net Worth Composition</div><div class="card-sub">Assets vs Liabilities</div></div></div><canvas id="compositionChart" height="150"></canvas></div>
+      <div class="card"><div class="card-hd"><div><div class="card-title">Asset Allocation</div><div class="card-sub">By category</div></div></div><canvas id="allocationChart" height="150"></canvas></div>
     </div>
     <div class="cg3">
       <div class="card"><div class="card-hd"><div class="card-title">Asset Breakdown</div></div><div id="assetBars"></div></div>
-      <div class="card"><div class="card-hd"><div class="card-title">Liability Breakdown</div></div><canvas id="liabChart" height="170"></canvas></div>
+      <div class="card"><div class="card-hd"><div class="card-title">Liability Breakdown</div></div><canvas id="liabChart" height="130"></canvas></div>
       <div class="card"><div class="card-hd"><div class="card-title">Recent Entries</div></div><div id="recentAct"></div></div>
     </div>
     <div class="cg2">
@@ -922,8 +959,21 @@ function fmtDate(ts){ if(!ts) return 'Finance Tips'; try{ const d=ts.toDate?ts.t
     <div class="mhd"><div class="mt" id="mTitle">Add Asset</div><button class="mx" onclick="closeModal()">✕</button></div>
     <div class="m2c"><div class="mg" style="grid-column:span 2"><label class="ml">Name</label><input class="mi" id="fName" placeholder="e.g. HDFC Savings Account"></div></div>
     <div class="m2c">
-      <div class="mg"><label class="ml">Category</label><select class="ms" id="fCat"><option value="">Select</option></select></div>
+      <div class="mg"><label class="ml">Category</label><select class="ms" id="fCat" onchange="onCatChange(this.value)"><option value="">Select</option></select></div>
       <div class="mg"><label class="ml" id="fL1">Current Value (₹)</label><input class="mi" id="fV1" type="number" min="0" placeholder="0"></div>
+    </div>
+    <!-- Gold grams row — shown only when category is Gold/Jewellery -->
+    <div class="m2c" id="goldGramsRow" style="display:none">
+      <div class="mg" style="grid-column:span 2">
+        <label class="ml">🥇 Gold Weight (grams) <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--gold)">— value auto-calculated from live 22K price</span></label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="mi" id="fGrams" type="number" min="0" step="0.1" placeholder="e.g. 150" oninput="autoCalcGold()" style="flex:1">
+          <div class="gold-calc-pill" id="goldCalcPill" style="display:none">
+            <span id="goldCalcText">—</span>
+          </div>
+        </div>
+        <div style="font-size:.65rem;color:var(--muted);margin-top:4px" id="goldPriceHint"></div>
+      </div>
     </div>
     <div class="m2c">
       <div class="mg"><label class="ml" id="fL2">Purchase Value (₹)</label><input class="mi" id="fV2" type="number" min="0" placeholder="0"></div>
@@ -963,6 +1013,7 @@ const ACAT = ['Bank Account','Liquid Cash','Fixed Deposit','Stocks / Mutual Fund
 const LCAT = ['Home Loan','Car Loan','Personal Loan','Credit Card','Jewel Loan','Education Loan','Business Loan','Other Debt'];
 const COLS = ['#c9a84c','#16a34a','#2563eb','#9333ea','#e11d48','#0891b2','#d97706','#059669','#dc2626','#7c3aed','#0d9488'];
 let ldb = { assets:[], liabilities:[] }, charts = {}, editCtx = null, curType = 'asset', goals = [], curFmt = 'L';
+let goldPrice22k = 0; // per gram, live from API
 const cFont = { family:'Manrope', size:11 };
 const gridCol = '#f3f4f6'; const tickCol = '#9ca3af';
 
@@ -1012,6 +1063,101 @@ function loadGoals(){ try{ goals=JSON.parse(sessionStorage.getItem('wm_goals')||
 function saveGoals(){ sessionStorage.setItem('wm_goals',JSON.stringify(goals)); }
 loadGoals();
 
+// ── LIVE 22K GOLD PRICE (India) ──
+// Uses multiple CORS-friendly public APIs as fallback chain
+async function fetchGoldPrice() {
+  // Primary: goldapi.io-compatible free endpoint via allorigins proxy
+  // We use a chain of free approaches:
+  // 1. goldpricez.com JSON (free, no key)
+  // 2. metals-api fallback
+  // 3. Static approximate fallback with stale indicator
+  
+  const priceEl  = document.getElementById('gtPrice');
+  const statusEl = document.getElementById('gtStatus');
+  const hintEl   = document.getElementById('goldPriceHint');
+
+  try {
+    // Approach: fetch USD/gram for 22K from public metals API, convert to INR
+    // Using metals.live free tier (no key needed for spot price)
+    const res = await fetch('https://api.metals.live/v1/spot/gold', { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) throw new Error('metals.live fail');
+    const data = await res.json();
+    // data = [{gold: priceInUSD_per_troy_oz}]
+    const usdPerOz = data[0]?.gold || data?.gold;
+    if (!usdPerOz) throw new Error('bad response');
+    
+    // Convert: 1 troy oz = 31.1035g, 22K = 91.67% pure
+    // Get USD/INR rate
+    let usdInr = 84.5; // fallback rate
+    try {
+      const fxRes = await fetch('https://api.exchangerate-api.com/v4/latest/USD', { signal: AbortSignal.timeout(4000) });
+      const fxData = await fxRes.json();
+      usdInr = fxData.rates?.INR || 84.5;
+    } catch(e) {}
+    
+    const pricePerGram24k = (usdPerOz / 31.1035) * usdInr;
+    const price22k = Math.round(pricePerGram24k * 0.9167);
+    
+    goldPrice22k = price22k;
+    priceEl.textContent = '₹' + price22k.toLocaleString('en-IN');
+    statusEl.className = 'gt-status live';
+    statusEl.title = 'Live price updated ' + new Date().toLocaleTimeString('en-IN');
+    if (hintEl) hintEl.textContent = `Live 22K rate: ₹${price22k.toLocaleString('en-IN')}/gram · Updated ${new Date().toLocaleTimeString('en-IN')}`;
+    
+    // Refresh every 10 minutes
+    setTimeout(fetchGoldPrice, 600000);
+    return;
+  } catch(e) {}
+
+  // Fallback: try open exchange via allorigins
+  try {
+    const url = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.goldapi.io/api/XAU/INR');
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    const data = await res.json();
+    if (data.price_gram_22k) {
+      goldPrice22k = Math.round(data.price_gram_22k);
+      priceEl.textContent = '₹' + goldPrice22k.toLocaleString('en-IN');
+      statusEl.className = 'gt-status live';
+      if (hintEl) hintEl.textContent = `Live 22K rate: ₹${goldPrice22k.toLocaleString('en-IN')}/gram`;
+      setTimeout(fetchGoldPrice, 600000);
+      return;
+    }
+  } catch(e) {}
+
+  // Final fallback: approximate static price with stale indicator
+  // 22K gold is ~₹7,200/gram as of early 2026 (approximate)
+  goldPrice22k = 7200;
+  priceEl.textContent = '~₹7,200';
+  statusEl.className = 'gt-status stale';
+  statusEl.title = 'Approximate price — live fetch unavailable';
+  if (hintEl) hintEl.textContent = 'Approximate rate: ₹7,200/gram (live fetch unavailable)';
+  setTimeout(fetchGoldPrice, 1800000); // retry in 30 min
+}
+
+fetchGoldPrice();
+
+// ── GOLD MODAL HELPERS ──
+window.onCatChange = function(cat) {
+  const isGold = cat === 'Gold / Jewellery';
+  const row = document.getElementById('goldGramsRow');
+  if (row) row.style.display = isGold ? 'block' : 'none';
+  if (!isGold) {
+    const g = document.getElementById('fGrams'); if (g) g.value = '';
+    const p = document.getElementById('goldCalcPill'); if (p) p.style.display = 'none';
+  }
+};
+
+window.autoCalcGold = function() {
+  const grams = parseFloat(document.getElementById('fGrams')?.value) || 0;
+  const pill  = document.getElementById('goldCalcPill');
+  const txt   = document.getElementById('goldCalcText');
+  const v1    = document.getElementById('fV1');
+  if (!grams || !goldPrice22k) { if (pill) pill.style.display = 'none'; return; }
+  const val = Math.round(grams * goldPrice22k);
+  if (pill) { pill.style.display = 'flex'; txt.textContent = '= ₹' + val.toLocaleString('en-IN'); }
+  if (v1) v1.value = val; // auto-fill the value field
+};
+
 window.showPage = (page, el) => {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sb-btn').forEach(b=>b.classList.remove('active'));
@@ -1021,13 +1167,29 @@ window.showPage = (page, el) => {
 };
 
 function render() {
+  // Auto-update gold asset values from live price × grams
+  if (goldPrice22k > 0) {
+    ldb.assets.forEach(a => {
+      if (a.cat === 'Gold / Jewellery' && a.grams && a.grams > 0) {
+        a.v1 = Math.round(a.grams * goldPrice22k); // live recalculation (local only, doesn't write to Firestore)
+      }
+    });
+  }
   const ta=ldb.assets.reduce((s,a)=>s+Number(a.v1||0),0);
   const tl=ldb.liabilities.reduce((s,l)=>s+Number(l.v1||0),0);
   const nw=ta-tl, dr=ta>0?(tl/ta*100).toFixed(1):0;
-  document.getElementById('nwVal').textContent=fmt(nw);
+  // KPI values with styled ₹ symbol
+  function kpiHtml(v, isNeg) {
+    const s = fmt(v);
+    // Split rupee symbol from number for separate styling
+    const sym = s.startsWith('₹') ? '₹' : '';
+    const num = sym ? s.slice(1) : s;
+    return `<span class="kpi-sym">${sym}</span>${num}`;
+  }
+  document.getElementById('nwVal').innerHTML=kpiHtml(nw);
   document.getElementById('nwVal').className='kpi-val'+(nw<0?' neg':'');
-  document.getElementById('taVal').textContent=fmt(ta);
-  document.getElementById('tlVal').textContent=fmt(tl);
+  document.getElementById('taVal').innerHTML=kpiHtml(ta);
+  document.getElementById('tlVal').innerHTML=kpiHtml(tl);
   document.getElementById('drVal').textContent=dr+'%';
   document.getElementById('acBadge').textContent=ldb.assets.length+' entries';
   document.getElementById('lcBadge').textContent=ldb.liabilities.length+' entries';
@@ -1038,6 +1200,7 @@ function render() {
   rList('al-assets','assets',ta,'at-assets','ac-assets');
   rList('ll-liabilities','liabilities',tl,'lt-liabilities','lc-liabilities');
   rComposition(ta,tl); rAllocation(); rLiabChart(); rAssetBars(); rTopItems(); rRecentActivity();
+  rGoldSummary();
   const ap=document.querySelector('.sb-btn.active')?.id?.replace('nav-','');
   if(ap) renderPageCharts(ap);
 }
@@ -1058,6 +1221,19 @@ function rTopItems() {
   document.getElementById('topAssets').innerHTML=[...ldb.assets].sort((a,b)=>Number(b.v1)-Number(a.v1)).slice(0,5).map(a=>`<div class="tr" style="grid-template-columns:2fr 1fr 55px"><div><div class="rn">${a.name}</div><span class="rcat">${a.cat}</span></div><div class="rv rvg">${fmt(a.v1)}</div><div class="rsub" style="text-align:right">${ta>0?((a.v1/ta)*100).toFixed(1)+'%':''}</div></div>`).join('')||`<div class="empty-st"><div class="ei-big">🏦</div>No assets</div>`;
   document.getElementById('topLiabs').innerHTML=[...ldb.liabilities].sort((a,b)=>Number(b.v1)-Number(a.v1)).slice(0,5).map(l=>`<div class="tr" style="grid-template-columns:2fr 1fr 55px"><div><div class="rn">${l.name}</div><span class="rcat">${l.cat}</span></div><div class="rv rvr">${fmt(l.v1)}</div><div class="rsub" style="text-align:right">${tl>0?((l.v1/tl)*100).toFixed(1)+'%':''}</div></div>`).join('')||`<div class="empty-st"><div class="ei-big">📋</div>No liabilities</div>`;
 }
+function rGoldSummary() {
+  const goldAssets = ldb.assets.filter(a => a.cat === 'Gold / Jewellery' && a.grams > 0);
+  const bar = document.getElementById('goldSummaryBar');
+  if (!bar) return;
+  if (!goldAssets.length) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  const totalGrams = goldAssets.reduce((s,a) => s + Number(a.grams||0), 0);
+  const totalVal   = goldAssets.reduce((s,a) => s + Number(a.v1||0), 0);
+  document.getElementById('goldTotalGrams').textContent = totalGrams.toFixed(1) + 'g tracked across ' + goldAssets.length + ' item(s)';
+  document.getElementById('goldTotalValue').textContent = '≈ ' + fmt(totalVal) + ' at ₹' + (goldPrice22k||'—') + '/g (22K live)';
+  document.getElementById('goldLastUpdate').textContent = goldPrice22k ? '🔄 auto-updating' : 'price unavailable';
+}
+
 function rRecentActivity() {
   const all=[...ldb.assets.map(a=>({...a,type:'asset'})),...ldb.liabilities.map(l=>({...l,type:'liability'}))].slice(-5).reverse();
   document.getElementById('recentAct').innerHTML=all.length?all.map(i=>`<div class="act-item"><div class="act-ico" style="background:${i.type==='asset'?'var(--gbg)':'var(--rbg)'}">${i.type==='asset'?'🏦':'📋'}</div><div style="flex:1"><div class="act-name">${i.name}</div><div class="act-cat">${i.cat}</div></div><div class="rv ${i.type==='asset'?'rvg':'rvr'}">${fmt(i.v1)}</div></div>`).join(''):`<div class="empty-st" style="padding:12px"><div class="ei-big">📝</div>No entries yet</div>`;
@@ -1155,20 +1331,24 @@ window.openModal=(type,item=null)=>{
   document.getElementById('mTitle').textContent=item?`Edit ${isA?'Asset':'Liability'}`:`Add ${isA?'Asset':'Liability'}`;
   document.getElementById('fL1').textContent=isA?'Current Value (₹)':'Outstanding (₹)'; document.getElementById('fL2').textContent=isA?'Purchase Value (₹)':'Original Amount (₹)';
   document.getElementById('fCat').innerHTML='<option value="">Select</option>'+(isA?ACAT:LCAT).map(c=>`<option value="${c}">${c}</option>`).join('');
-  if(item){document.getElementById('fName').value=item.name||'';document.getElementById('fCat').value=item.cat||'';document.getElementById('fV1').value=item.v1||'';document.getElementById('fV2').value=item.v2||'';document.getElementById('fDate').value=item.date||'';document.getElementById('fNotes').value=item.notes||'';editCtx={id:item.id};}
-  else{['fName','fV1','fV2','fNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('fCat').value='';document.getElementById('fDate').value='';editCtx=null;}
+  if(item){document.getElementById('fName').value=item.name||'';document.getElementById('fCat').value=item.cat||'';document.getElementById('fV1').value=item.v1||'';document.getElementById('fV2').value=item.v2||'';document.getElementById('fDate').value=item.date||'';document.getElementById('fNotes').value=item.notes||'';if(document.getElementById('fGrams'))document.getElementById('fGrams').value=item.grams||'';editCtx={id:item.id};onCatChange(item.cat||'');}
+  else{['fName','fV1','fV2','fNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('fCat').value='';document.getElementById('fDate').value='';if(document.getElementById('fGrams'))document.getElementById('fGrams').value='';const goldRow=document.getElementById('goldGramsRow');if(goldRow)goldRow.style.display='none';editCtx=null;}
   document.getElementById('entryOverlay').classList.add('open'); setTimeout(()=>document.getElementById('fName').focus(),60);
 };
 window.closeModal=()=>{document.getElementById('entryOverlay').classList.remove('open');editCtx=null;};
 window.editEntry=(type,id)=>{const item=ldb[type].find(i=>i.id===id);if(item)window.openModal(type==='assets'?'asset':'liability',item);};
 window.saveEntry=async()=>{
   const name=document.getElementById('fName').value.trim(),cat=document.getElementById('fCat').value;
-  const v1=parseFloat(document.getElementById('fV1').value)||0,v2=parseFloat(document.getElementById('fV2').value)||0;
+  let v1=parseFloat(document.getElementById('fV1').value)||0;
+  const v2=parseFloat(document.getElementById('fV2').value)||0;
   const date=document.getElementById('fDate').value,notes=document.getElementById('fNotes').value.trim();
+  const grams=cat==='Gold / Jewellery'?(parseFloat(document.getElementById('fGrams')?.value)||0):0;
+  // If gold grams entered but v1 is 0, auto-calculate from live price
+  if(grams && goldPrice22k && !v1) v1 = Math.round(grams * goldPrice22k);
   if(!name||!cat){showT('Name and Category required.');return;}
   const type=curType==='asset'?'assets':'liabilities',eid=editCtx?editCtx.id:uid();
   window.closeModal();showT('Saving…');
-  try{await setDoc(doc(db,'users',auth.currentUser.uid,type,eid),{name,cat,v1,v2,date,notes});showT('Saved ✓');}
+  try{await setDoc(doc(db,'users',auth.currentUser.uid,type,eid),{name,cat,v1,v2,date,notes,grams:grams||null,goldPriceAtSave:grams?goldPrice22k:null});showT('Saved ✓');}
   catch(e){showT('Error: '+e.message);}
 };
 window.delEntry=async(type,id)=>{
