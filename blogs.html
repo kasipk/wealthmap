@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finance Blogs — WealthMap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/wealthmap/style.css">
+<style>
+body { opacity: 0; animation: pagein .45s var(--ease) .05s forwards; }
+@keyframes pagein { to { opacity: 1; } }
+
+/* HERO */
+.blogs-hero { background: linear-gradient(135deg,#1a1a2e,#16213e); padding: 130px 52px 64px; }
+.blogs-hero-inner { max-width: 1240px; margin: 0 auto; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.bh-ey { display: inline-flex; align-items: center; gap: 7px; background: rgba(201,168,76,.14); border: 1px solid rgba(201,168,76,.25); border-radius: 100px; padding: 5px 16px; font-size: .68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+.bh-h { font-family: 'Playfair Display', serif; font-size: clamp(2.6rem,5vw,4.2rem); font-weight: 900; color: #fff; line-height: 1.05; margin-bottom: 14px; }
+.bh-h em { font-style: italic; color: var(--gold); }
+.bh-p { font-size: 1rem; color: rgba(255,255,255,.5); max-width: 520px; line-height: 1.8; margin-bottom: 32px; }
+.bh-cats { display: flex; gap: 8px; flex-wrap: wrap; }
+.bh-cat { padding: 6px 18px; border-radius: 100px; border: 1px solid rgba(255,255,255,.15); background: transparent; color: rgba(255,255,255,.5); font-family: 'Manrope', sans-serif; font-size: .78rem; font-weight: 500; cursor: pointer; transition: all .22s; }
+.bh-cat:hover, .bh-cat.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,.1); }
+.btn-write { display: none; align-items: center; gap: 8px; padding: 13px 26px; border: none; border-radius: 100px; background: linear-gradient(135deg,var(--gold),var(--gold2)); color: var(--navy); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .88rem; cursor: pointer; transition: all .28s; box-shadow: 0 6px 24px rgba(201,168,76,.35); white-space: nowrap; align-self: flex-start; margin-top: 8px; }
+.btn-write:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,168,76,.5); }
+.btn-write.show { display: flex; }
+
+/* BODY */
+.blogs-body { max-width: 1240px; margin: 0 auto; padding: 60px 52px 90px; }
+.blogs-loading { text-align: center; padding: 80px 20px; }
+.bl-spin { width: 40px; height: 40px; border: 3px solid var(--brd); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.bl-txt { font-size: .88rem; color: var(--muted); }
+.blogs-empty { text-align: center; padding: 80px 20px; display: none; }
+.be-icon { font-size: 3rem; margin-bottom: 16px; opacity: .3; }
+.be-t { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.be-d { font-size: .88rem; color: var(--muted); }
+
+/* GRID */
+.blogs-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; display: none; }
+.blogs-grid .bc:first-child { grid-column: span 2; }
+.blogs-grid .bc:first-child .bc-img { height: 260px; }
+.blogs-grid .bc:first-child .bc-title { font-size: 1.35rem; }
+
+/* CARD */
+.bc { background: #fff; border-radius: var(--rx); overflow: hidden; border: 1.5px solid var(--brd); transition: all .4s var(--ease); cursor: pointer; display: flex; flex-direction: column; box-shadow: 0 2px 10px rgba(0,0,0,.04); position: relative; }
+.bc:hover { transform: translateY(-6px); border-color: var(--gold); box-shadow: 0 20px 50px rgba(0,0,0,.1); }
+.bc-img { position: relative; overflow: hidden; height: 200px; }
+.bc-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.bc:hover .bc-img img { transform: scale(1.06); }
+.bc-ov { position: absolute; inset: 0; background: linear-gradient(to top,rgba(26,26,46,.55),transparent); }
+.bc-badge { position: absolute; top: 14px; left: 14px; background: var(--gold); color: var(--navy); font-size: .6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 11px; border-radius: 100px; z-index: 2; }
+.bc-adm { position: absolute; top: 10px; right: 10px; display: none; gap: 6px; z-index: 5; }
+.bc-adm.show { display: flex; }
+.ba-btn { width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .8rem; transition: all .2s; }
+.ba-edit { background: rgba(255,255,255,.9); color: var(--navy); }
+.ba-edit:hover { background: var(--gold); }
+.ba-del { background: rgba(255,255,255,.9); color: var(--red); }
+.ba-del:hover { background: var(--red); color: #fff; }
+.bc-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+.bc-meta { display: flex; align-items: center; gap: 8px; font-size: .7rem; color: var(--muted); margin-bottom: 10px; }
+.bc-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+.bc-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--navy); line-height: 1.35; margin-bottom: 10px; transition: color .3s; }
+.bc:hover .bc-title { color: var(--gold); }
+.bc-ex { font-size: .82rem; color: var(--txt2); line-height: 1.7; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.bc-rd { display: inline-flex; align-items: center; gap: 5px; margin-top: 16px; font-size: .76rem; font-weight: 600; color: var(--gold); transition: gap .2s; }
+.bc:hover .bc-rd { gap: 9px; }
+
+/* READ MODAL */
+/* ── Article overlay: centred, no outer scroll ── */
+.art-ov { position: fixed; inset: 0; background: rgba(26,26,46,.65); backdrop-filter: blur(10px); z-index: 900; display: none; align-items: center; justify-content: center; padding: 60px 20px; }
+.art-ov.open { display: flex; }
+
+/* Modal box — flex column: frozen title bar on top, rest scrolls */
+.art-box { background: #fff; border-radius: 24px; max-width: 760px; width: 100%; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 40px 100px rgba(0,0,0,.2); animation: pop .35s var(--ease); overflow: hidden; }
+@keyframes pop { from{transform:scale(.9) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+
+/* FROZEN — only the title bar + close button */
+.art-hd { padding: 18px 40px 16px; border-bottom: 1px solid var(--brd); flex-shrink: 0; background: #fff; display: flex; align-items: center; justify-content: space-between; gap: 14px; position: relative; }
+.art-hd-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.art-hbadge { background: var(--gold); color: var(--navy); font-size: .6rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 4px 11px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+.art-mt { display: flex; align-items: center; gap: 8px; font-size: .72rem; color: var(--muted); }
+.art-mt-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+.art-x { width: 34px; height: 34px; border-radius: 50%; background: var(--bg2); border: 1px solid var(--brd); color: var(--muted); font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; flex-shrink: 0; }
+.art-x:hover { background: #fff0ee; color: var(--red); border-color: var(--red); }
+
+/* SCROLLABLE — image + title + content all scroll together */
+.art-bd { overflow-y: auto; flex: 1; }
+.art-bd::-webkit-scrollbar { width: 5px; }
+.art-bd::-webkit-scrollbar-track { background: transparent; }
+.art-bd::-webkit-scrollbar-thumb { background: var(--brd); border-radius: 3px; }
+.art-bd::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Image inside scrollable area */
+.art-hero { height: 260px; position: relative; overflow: hidden; }
+.art-hero img { width: 100%; height: 100%; object-fit: cover; }
+.art-hero-ov { position: absolute; inset: 0; background: linear-gradient(to top,rgba(26,26,46,.5),transparent 60%); }
+
+/* Title + content padding */
+.art-ttl-wrap { padding: 26px 40px 4px; }
+.art-ttl { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--navy); line-height: 1.2; }
+.art-cnt-wrap { padding: 18px 40px 44px; }
+.art-bd::-webkit-scrollbar { width: 5px; }
+.art-bd::-webkit-scrollbar-track { background: transparent; }
+.art-bd::-webkit-scrollbar-thumb { background: var(--brd); border-radius: 3px; }
+.art-bd::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Rich content rendering */
+.art-cnt { font-size: .93rem; color: var(--txt2); line-height: 1.88; }
+.art-cnt p { margin-bottom: 16px; }
+.art-cnt h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--navy); margin: 24px 0 10px; }
+.art-cnt ul, .art-cnt ol { padding-left: 22px; margin-bottom: 16px; }
+.art-cnt li { margin-bottom: 5px; }
+.art-cnt blockquote { background: rgba(201,168,76,.08); border-left: 3px solid var(--gold); padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 16px 0; font-style: italic; color: var(--navy); }
+.art-cnt strong { color: var(--navy); font-weight: 700; }
+.art-cnt em { font-style: italic; }
+.art-cnt u { text-decoration: underline; }
+
+/* EDITOR MODAL */
+.edit-ov { position: fixed; inset: 0; background: rgba(26,26,46,.75); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: flex-start; justify-content: center; padding: 40px 20px; overflow-y: auto; }
+.edit-ov.open { display: flex; }
+.edit-box { background: #fff; border-radius: 24px; max-width: 800px; width: 100%; box-shadow: 0 40px 100px rgba(0,0,0,.25); animation: pop .35s var(--ease); margin: auto; }
+.edit-hd { padding: 30px 38px 0; display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.edit-ttl { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+.edit-x { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--brd); background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .9rem; transition: all .2s; }
+.edit-x:hover { background: #fff0ee; color: var(--red); border-color: var(--red); }
+.edit-bd { padding: 22px 38px 38px; }
+.eg { margin-bottom: 18px; }
+.el { display: block; font-size: .66rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-weight: 700; margin-bottom: 7px; }
+.ei, .es, .eta { width: 100%; padding: 12px 15px; background: var(--bg); border: 1.5px solid var(--brd); border-radius: 10px; color: var(--navy); font-family: 'Manrope', sans-serif; font-size: .89rem; outline: none; transition: all .25s; }
+.ei:focus, .es:focus, .eta:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(201,168,76,.08); }
+.eta { resize: vertical; line-height: 1.7; }
+.e2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ehint { font-size: .7rem; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+/* ── Rich text toolbar ── */
+.rte-wrap { border: 1.5px solid var(--brd); border-radius: 10px; overflow: hidden; transition: border-color .25s; }
+.rte-wrap:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,.08); }
+.rte-toolbar { display: flex; align-items: center; gap: 2px; padding: 8px 10px; background: var(--bg); border-bottom: 1.5px solid var(--brd); flex-wrap: wrap; }
+.rte-btn { width: 30px; height: 30px; border-radius: 7px; border: none; background: transparent; color: var(--txt2); font-size: .82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .18s; font-family: 'Manrope', sans-serif; }
+.rte-btn:hover { background: var(--bg2); color: var(--navy); }
+.rte-btn.active { background: var(--navy); color: #fff; }
+.rte-btn b { font-weight: 900; }
+.rte-divider { width: 1px; height: 20px; background: var(--brd); margin: 0 4px; }
+.rte-select { padding: 4px 8px; border-radius: 7px; border: 1px solid var(--brd); background: #fff; color: var(--txt2); font-family: 'Manrope', sans-serif; font-size: .76rem; outline: none; cursor: pointer; transition: border-color .2s; }
+.rte-select:focus { border-color: var(--gold); }
+.rte-editor { min-height: 240px; max-height: 380px; overflow-y: auto; padding: 14px 15px; background: #fff; font-family: 'Manrope', sans-serif; font-size: .89rem; color: var(--navy); line-height: 1.7; outline: none; }
+.rte-editor::-webkit-scrollbar { width: 5px; }
+.rte-editor::-webkit-scrollbar-thumb { background: var(--brd); border-radius: 3px; }
+.rte-editor p { margin-bottom: 10px; }
+.rte-editor blockquote { background: rgba(201,168,76,.08); border-left: 3px solid var(--gold); padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 10px 0; font-style: italic; }
+.rte-editor h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); margin: 16px 0 8px; }
+.rte-hint { font-size: .7rem; color: var(--muted); margin-top: 5px; }
+.edit-acts { display: flex; gap: 10px; margin-top: 6px; }
+.btn-pub { flex: 1; padding: 14px; border: none; border-radius: 11px; background: linear-gradient(135deg,var(--gold),var(--gold2)); color: var(--navy); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .93rem; cursor: pointer; transition: all .28s; }
+.btn-pub:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,.35); }
+.btn-pub:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.btn-can { padding: 14px 24px; border: 1.5px solid var(--brd); border-radius: 11px; background: transparent; color: var(--muted); font-family: 'Manrope', sans-serif; font-weight: 500; font-size: .88rem; cursor: pointer; transition: all .2s; }
+.btn-can:hover { border-color: var(--navy); color: var(--navy); }
+
+@media(max-width:1024px) {
+  .blogs-hero { padding: 120px 24px 52px; }
+  .blogs-body { padding: 44px 24px 80px; }
+  .blogs-grid { grid-template-columns: 1fr 1fr; }
+  .blogs-grid .bc:first-child { grid-column: span 2; }
+  .art-hd { padding: 14px 20px; }
+  .art-ttl-wrap, .art-cnt-wrap { padding-left: 22px; padding-right: 22px; }
+  .art-hero { height: 200px; }
+  .art-ttl { font-size: 1.3rem; }
+  .art-ov { padding: 16px 10px; }
+  .art-box { max-height: 95vh; }
+  .edit-bd { padding: 16px 24px 28px; }
+  .edit-hd { padding: 24px 24px 0; }
+}
+@media(max-width:640px) {
+  .blogs-grid { grid-template-columns: 1fr; }
+  .blogs-grid .bc:first-child { grid-column: span 1; }
+  .e2 { grid-template-columns: 1fr; }
+  .art-hero { height: 160px; }
+}
+</style>
+</head>
+<body>
+<div id="curtain"></div>
+
+<nav id="nav">
+  <a class="logo" href="/wealthmap/"><span>Wealth</span>Map</a>
+  <div class="nav-pills">
+    <a class="np" id="np-home" href="/wealthmap/">Home</a>
+    <a class="np" id="np-blogs" href="/wealthmap/blogs.html">Finance Blogs</a>
+    <a class="np" id="np-calculator" href="/wealthmap/calculator.html">Calculator</a>
+    <a class="np" id="np-products" href="/wealthmap/products.html">Products</a>
+    <a class="np" id="np-about" href="/wealthmap/about.html">About Us</a>
+    <a class="np" id="np-contact" href="/wealthmap/contact.html">Contact</a>
+  </div>
+  <div class="nav-right" id="navPublic">
+    <a class="btn-nr" href="/wealthmap/login.html">Sign In</a>
+    <a class="btn-ng" href="/wealthmap/login.html">Get Started →</a>
+  </div>
+  <div class="nav-user" id="navUser" style="display:none">
+    <div class="nav-pill-u" id="navPillU" onclick="toggleProfileDd()" title="Your profile">
+      <div class="nav-av" id="navAv">U</div>
+      <span class="nav-nm" id="navNm"></span>
+      <span style="font-size:.6rem;color:var(--muted);margin-left:3px">▾</span>
+    </div>
+    <span class="nav-adm" id="navAdm" style="display:none">Admin</span>
+    <button class="btn-so" id="navSignOut" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="blogs-hero">
+  <div class="blogs-hero-inner">
+    <div>
+      <div class="bh-ey">📰 Finance Insights</div>
+      <h1 class="bh-h">Learn, grow &amp; <em>master</em><br>your money</h1>
+      <p class="bh-p">Practical finance wisdom for everyday Indians — from building your first emergency fund to optimising your investment portfolio.</p>
+      <div class="bh-cats" id="catFilters">
+        <button class="bh-cat active" data-cat="All">All</button>
+        <button class="bh-cat" data-cat="Investing">Investing</button>
+        <button class="bh-cat" data-cat="Savings">Savings</button>
+        <button class="bh-cat" data-cat="Real Estate">Real Estate</button>
+        <button class="bh-cat" data-cat="Debt">Debt</button>
+        <button class="bh-cat" data-cat="Retirement">Retirement</button>
+        <button class="bh-cat" data-cat="Gold & FD">Gold & FD</button>
+        <button class="bh-cat" data-cat="Net Worth">Net Worth</button>
+        <button class="bh-cat" data-cat="Tax">Tax</button>
+      </div>
+    </div>
+    <button class="btn-write" id="btnWrite" onclick="openEditor()">✍️ Write Blog</button>
+  </div>
+</div>
+
+<!-- BLOGS -->
+<div class="blogs-body">
+  <div id="blogsLoading" class="blogs-loading">
+    <div class="bl-spin"></div>
+    <div class="bl-txt">Loading articles…</div>
+  </div>
+  <div id="blogsEmpty" class="blogs-empty">
+    <div class="be-icon">📝</div>
+    <div class="be-t">No blogs yet</div>
+    <div class="be-d" id="emptyMsg">Check back soon for finance insights.</div>
+  </div>
+  <div id="blogsGrid" class="blogs-grid"></div>
+</div>
+
+<!-- READ ARTICLE -->
+<div class="art-ov" id="artOv">
+  <div class="art-box">
+    <!-- FROZEN: thin header bar with category + date + close -->
+    <div class="art-hd">
+      <div class="art-hd-left">
+        <span class="art-hbadge" id="artCat"></span>
+        <div class="art-mt">
+          <span id="artDate"></span>
+          <span class="art-mt-dot"></span>
+          <span id="artRead"></span>
+        </div>
+      </div>
+      <button class="art-x" onclick="closeArt()">✕</button>
+    </div>
+    <!-- SCROLLABLE: image + title + content -->
+    <div class="art-bd">
+      <div class="art-hero">
+        <img id="artImg" src="" alt="">
+        <div class="art-hero-ov"></div>
+      </div>
+      <div class="art-ttl-wrap">
+        <div class="art-ttl" id="artTitle"></div>
+      </div>
+      <div class="art-cnt-wrap">
+        <div class="art-cnt" id="artContent"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDITOR MODAL -->
+<div class="edit-ov" id="editOv">
+  <div class="edit-box">
+    <div class="edit-hd">
+      <div class="edit-ttl" id="editHeading">✍️ Write New Blog</div>
+      <button class="edit-x" onclick="closeEditor()">✕</button>
+    </div>
+    <div class="edit-bd">
+      <div class="eg"><label class="el">Blog Title *</label><input class="ei" id="eTitle" placeholder="e.g. How to Build Wealth in Your 30s"></div>
+      <div class="e2">
+        <div class="eg"><label class="el">Category *</label>
+          <select class="es" id="eCat">
+            <option value="">Select category</option>
+            <option>Investing</option><option>Savings</option><option>Real Estate</option>
+            <option>Debt</option><option>Retirement</option><option>Gold & FD</option>
+            <option>Net Worth</option><option>Tax</option><option>General</option>
+          </select>
+        </div>
+        <div class="eg"><label class="el">Read Time *</label><input class="ei" id="eRead" placeholder="e.g. 5 min read"></div>
+      </div>
+      <div class="eg">
+        <label class="el">Cover Image URL *</label>
+        <input class="ei" id="eImg" placeholder="https://images.unsplash.com/photo-...?w=900&q=80" oninput="prevImg()">
+        <div class="ehint">Paste any image URL. Tip: go to unsplash.com, find a photo, open it, copy URL and add <strong>?w=900&q=80</strong> at the end.</div>
+        <img class="eimg-prev" id="eImgPrev" alt="Preview">
+      </div>
+      <div class="eg"><label class="el">Short Excerpt * <span style="font-weight:400;text-transform:none;letter-spacing:0">(shown on card)</span></label><textarea class="eta" id="eExcerpt" style="min-height:80px" placeholder="2–3 sentence summary shown on the blog card…"></textarea></div>
+      <div class="eg">
+        <label class="el">Full Article Content *</label>
+        <div class="rte-wrap">
+          <div class="rte-toolbar">
+            <!-- Text style -->
+            <select class="rte-select" onchange="rteBlock(this.value);this.value=''" title="Heading">
+              <option value="">Paragraph</option>
+              <option value="h3">Heading</option>
+              <option value="blockquote">Quote</option>
+            </select>
+            <div class="rte-divider"></div>
+            <!-- Inline formats -->
+            <button type="button" class="rte-btn" onclick="rteExec('bold')" title="Bold"><b>B</b></button>
+            <button type="button" class="rte-btn" onclick="rteExec('italic')" title="Italic"><i>I</i></button>
+            <button type="button" class="rte-btn" onclick="rteExec('underline')" title="Underline"><u>U</u></button>
+            <button type="button" class="rte-btn" onclick="rteExec('strikeThrough')" title="Strikethrough"><s>S</s></button>
+            <div class="rte-divider"></div>
+            <!-- Lists -->
+            <button type="button" class="rte-btn" onclick="rteExec('insertUnorderedList')" title="Bullet list">≡</button>
+            <button type="button" class="rte-btn" onclick="rteExec('insertOrderedList')" title="Numbered list">⒈</button>
+            <div class="rte-divider"></div>
+            <!-- Alignment -->
+            <button type="button" class="rte-btn" onclick="rteExec('justifyLeft')" title="Align left">⬛</button>
+            <button type="button" class="rte-btn" onclick="rteExec('justifyCenter')" title="Centre">▣</button>
+            <!-- Highlight -->
+            <div class="rte-divider"></div>
+            <button type="button" class="rte-btn" onclick="rteHighlight()" title="Highlight" style="font-size:.7rem;width:auto;padding:0 8px;background:rgba(201,168,76,.15);color:var(--navy)">✦ Highlight</button>
+            <!-- Clear -->
+            <div class="rte-divider"></div>
+            <button type="button" class="rte-btn" onclick="rteExec('removeFormat')" title="Clear formatting" style="font-size:.7rem;width:auto;padding:0 8px">✕ Clear</button>
+          </div>
+          <div class="rte-editor" id="eContent" contenteditable="true" spellcheck="true"></div>
+        </div>
+        <div class="rte-hint">Select text and click a format button, or type and format as you go.</div>
+      </div>
+      <div class="edit-acts">
+        <button class="btn-can" onclick="closeEditor()">Cancel</button>
+        <button class="btn-pub" id="btnPub" onclick="publishBlog()">🚀 Publish Blog</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fi">
+    <div class="foot-grid">
+      <div><div class="f-brand">Wealth<span>Map</span></div><div class="f-desc">A modern personal finance tracker for India. Track assets, liabilities, and net worth elegantly.</div></div>
+      <div><div class="f-ct">Product</div><div class="f-links"><a class="f-lnk" href="/wealthmap/">Home</a><a class="f-lnk" href="/wealthmap/login.html">Sign In</a><a class="f-lnk" href="/wealthmap/">Dashboard</a><a class="f-lnk" href="/wealthmap/calculator.html">SIP Calculator</a></div></div>
+      <div><div class="f-ct">Resources</div><div class="f-links"><a class="f-lnk" href="/wealthmap/blogs.html">Finance Blogs</a><a class="f-lnk" href="/wealthmap/about.html">About Us</a></div></div>
+      <div><div class="f-ct">Company</div><div class="f-links"><a class="f-lnk" href="/wealthmap/contact.html">Contact Us</a><a class="f-lnk" href="#">Privacy Policy</a></div></div>
+    </div>
+    <div class="foot-bot"><span>© 2025 WealthMap · All rights reserved</span><span>Made with ♥ in Chennai, India</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span class="tic">✦</span><span id="toastMsg"></span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initNav, initReveal } from '/wealthmap/shared.js';
+
+const FB = { apiKey:"AIzaSyAXHRiYdO-Y6nSWnT7K23mxfFYFu-JELls", authDomain:"wealthmap-705a6.firebaseapp.com", projectId:"wealthmap-705a6", storageBucket:"wealthmap-705a6.firebasestorage.app", messagingSenderId:"824878360619", appId:"1:824878360619:web:f45bb59b4f78e846bfe26e" };
+const ADMIN = 'kasiviswa@hotmail.com';
+const fapp = initializeApp(FB);
+const auth = getAuth(fapp);
+const db = getFirestore(fapp);
+
+let isAdmin = false, allBlogs = [], editingId = null, activeFilter = 'All';
+
+// ── Auth state ──
+onAuthStateChanged(auth, u => {
+  isAdmin = !!(u && u.email === ADMIN);
+  document.getElementById('btnWrite').classList.toggle('show', isAdmin);
+  renderBlogs(filtered());
+});
+
+initNav('blogs');
+
+// ── Load blogs realtime ──
+onSnapshot(query(collection(db,'blogs'), orderBy('createdAt','desc')), snap => {
+  allBlogs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  document.getElementById('blogsLoading').style.display = 'none';
+  renderBlogs(filtered());
+  setTimeout(initReveal, 80);
+  // If URL has a #blogId hash, navigate to that article page
+  const hash = window.location.hash.slice(1);
+  if (hash && allBlogs.find(b => b.id === hash)) {
+    window.location.href = '/wealthmap/blog.html?id=' + hash;
+  }
+}, () => {
+  document.getElementById('blogsLoading').style.display = 'none';
+  showEmpty('Could not load articles. Please refresh the page.');
+});
+
+// ── Category filter ──
+document.querySelectorAll('.bh-cat').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.bh-cat').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.cat;
+    renderBlogs(filtered());
+  });
+});
+function filtered() {
+  return activeFilter === 'All' ? allBlogs : allBlogs.filter(b => b.category === activeFilter);
+}
+
+// ── Render ──
+function renderBlogs(blogs) {
+  const grid = document.getElementById('blogsGrid');
+  const empty = document.getElementById('blogsEmpty');
+  if (!blogs.length) {
+    grid.style.display = 'none';
+    empty.style.display = 'block';
+    document.getElementById('emptyMsg').textContent = isAdmin
+      ? 'No blogs yet. Click "Write Blog" to publish your first article.'
+      : 'No articles in this category yet. Check back soon!';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.style.display = 'grid';
+  grid.innerHTML = blogs.map(b => {
+    const dateStr = b.createdAt
+      ? new Date(b.createdAt.seconds * 1000).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
+      : '';
+    return `<div class="bc reveal" onclick="openArt('${b.id}')">
+      <div class="bc-img">
+        <img src="${x(b.image)}" alt="${x(b.title)}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=900&q=80'">
+        <div class="bc-ov"></div>
+        <span class="bc-badge">${x(b.category)}</span>
+      </div>
+      <div class="bc-adm ${isAdmin?'show':''}">
+        <button class="ba-btn ba-edit" onclick="event.stopPropagation();editBlog('${b.id}')" title="Edit">✏️</button>
+        <button class="ba-btn ba-del" onclick="event.stopPropagation();delBlog('${b.id}')" title="Delete">🗑</button>
+      </div>
+      <div class="bc-body">
+        <div class="bc-meta">${dateStr?`<span>${dateStr}</span><span class="bc-sep"></span>`:''}<span>${x(b.readTime)}</span></div>
+        <div class="bc-title">${x(b.title)}</div>
+        <div class="bc-ex">${x(b.excerpt)}</div>
+        <div class="bc-rd">Read article →</div>
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(initReveal, 50);
+}
+
+function x(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Read article ──
+window.openArt = id => {
+  window.location.href = '/wealthmap/blog.html?id=' + id;
+};
+
+// ── Admin: open editor ──
+window.openEditor = () => {
+  editingId = null;
+  document.getElementById('editHeading').textContent = '✍️ Write New Blog';
+  document.getElementById('btnPub').textContent = '🚀 Publish Blog';
+  ['eTitle','eRead','eImg','eExcerpt'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('eCat').value = '';
+  document.getElementById('eContent').innerHTML = '';
+  document.getElementById('eImgPrev').style.display = 'none';
+  document.getElementById('editOv').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('eTitle').focus(), 60);
+};
+window.closeEditor = () => { document.getElementById('editOv').classList.remove('open'); document.body.style.overflow = ''; editingId = null; };
+document.getElementById('editOv').addEventListener('click', e => { if (e.target===document.getElementById('editOv')) closeEditor(); });
+
+// ── Admin: edit ──
+window.editBlog = id => {
+  const b = allBlogs.find(a => a.id === id); if (!b) return;
+  editingId = id;
+  document.getElementById('editHeading').textContent = '✏️ Edit Blog';
+  document.getElementById('btnPub').textContent = '💾 Save Changes';
+  document.getElementById('eTitle').value = b.title||'';
+  document.getElementById('eCat').value = b.category||'';
+  document.getElementById('eRead').value = b.readTime||'';
+  document.getElementById('eImg').value = b.image||'';
+  document.getElementById('eExcerpt').value = b.excerpt||'';
+  // Load HTML content into rich editor
+  const raw = b.content || '';
+  document.getElementById('eContent').innerHTML = raw.startsWith('<') ? raw : raw.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^(.+)$/,'<p>$1</p>');
+  prevImg();
+  document.getElementById('editOv').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+
+// ── Admin: publish / save ──
+window.publishBlog = async () => {
+  const title    = document.getElementById('eTitle').value.trim();
+  const category = document.getElementById('eCat').value;
+  const readTime = document.getElementById('eRead').value.trim();
+  const image    = document.getElementById('eImg').value.trim();
+  const excerpt  = document.getElementById('eExcerpt').value.trim();
+  const content  = document.getElementById('eContent').innerHTML.trim();
+  if (!title||!category||!readTime||!image||!excerpt||!content||content==='<br>') { toast('Please fill in all fields.'); return; }
+  const btn = document.getElementById('btnPub');
+  btn.textContent = '⏳ Saving…'; btn.disabled = true;
+  try {
+    const data = { title, category, readTime, image, excerpt, content };
+    if (editingId) {
+      await setDoc(doc(db,'blogs',editingId), { ...data, updatedAt: serverTimestamp() }, { merge: true });
+      toast('Blog updated ✓');
+    } else {
+      await addDoc(collection(db,'blogs'), { ...data, createdAt: serverTimestamp() });
+      toast('Blog published ✓');
+    }
+    closeEditor();
+  } catch(e) { toast('Error: ' + e.message); }
+  finally { btn.disabled=false; btn.textContent = editingId ? '💾 Save Changes' : '🚀 Publish Blog'; }
+};
+
+// ── Admin: delete ──
+window.delBlog = async id => {
+  if (!confirm('Delete this blog post? This cannot be undone.')) return;
+  try { await deleteDoc(doc(db,'blogs',id)); toast('Deleted ✓'); }
+  catch(e) { toast('Error: ' + e.message); }
+};
+
+// ── Image preview ──
+window.prevImg = () => {
+  const url = document.getElementById('eImg').value.trim();
+  const p = document.getElementById('eImgPrev');
+  if (url) { p.src = url; p.style.display = 'block'; p.onerror = () => p.style.display='none'; }
+  else p.style.display = 'none';
+};
+
+// ── Toast ──
+function toast(msg) {
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── Rich Text Editor helpers ──
+window.rteExec = cmd => {
+  document.getElementById('eContent').focus();
+  document.execCommand(cmd, false, null);
+};
+window.rteBlock = val => {
+  if (!val) return;
+  document.getElementById('eContent').focus();
+  document.execCommand('formatBlock', false, val === 'blockquote' ? 'blockquote' : val);
+};
+window.rteHighlight = () => {
+  document.getElementById('eContent').focus();
+  document.execCommand('hiliteColor', false, 'rgba(201,168,76,0.2)');
+};
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeArt(); closeEditor(); } });
+</script>
+</body>
+</html>

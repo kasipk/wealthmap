@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — WealthMap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/wealthmap/style.css">
+<style>
+body { opacity: 0; animation: pagein .45s var(--ease) .05s forwards; }
+@keyframes pagein { to { opacity: 1; } }
+
+/* HERO */
+.ch-hero { position: relative; height: 48vh; min-height: 340px; display: flex; align-items: flex-end; overflow: hidden; padding: 0 52px 48px; }
+.ch-img { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&q=80') center/cover no-repeat; animation: bgzoom 22s ease-in-out infinite alternate; }
+@keyframes bgzoom { from{transform:scale(1.06)} to{transform:scale(1.01)} }
+.ch-ov { position: absolute; inset: 0; background: linear-gradient(to top,rgba(26,26,46,1) 0%,rgba(26,26,46,.6) 55%,rgba(26,26,46,.2) 100%); }
+.ch-content { position: relative; z-index: 2; max-width: 1240px; margin: 0 auto; width: 100%; }
+.ch-ey { display: inline-flex; align-items: center; gap: 6px; font-size: .66rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.ch-h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem,5vw,4rem); font-weight: 700; color: #fff; line-height: 1.05; }
+.ch-h1 em { font-style: italic; color: var(--gold); }
+
+/* BODY */
+.contact-body { max-width: 760px; margin: 0 auto; padding: 52px 24px 90px; }
+
+/* FORM BOX */
+.cf-box { background: #fff; border: 1.5px solid var(--brd); border-radius: var(--rx); padding: 42px; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+.cf-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.cf-subtitle { font-size: .83rem; color: var(--muted); margin-bottom: 28px; line-height: 1.6; }
+.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.cf-grp { margin-bottom: 16px; }
+.cf-lbl { display: block; font-size: .66rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 7px; }
+.cf-inp, .cf-ta { width: 100%; padding: 12px 15px; background: var(--bg); border: 1.5px solid var(--brd); border-radius: 10px; color: var(--navy); font-family: 'Manrope', sans-serif; font-size: .89rem; outline: none; transition: all .25s; }
+.cf-inp::placeholder, .cf-ta::placeholder { color: var(--muted); }
+.cf-inp:focus, .cf-ta:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(201,168,76,.08); }
+.cf-inp.err, .cf-ta.err { border-color: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.07); }
+.cf-ta { resize: vertical; min-height: 130px; line-height: 1.65; }
+
+/* Status row below button */
+.cf-status { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: .8rem; min-height: 22px; }
+.cs-spin { width: 16px; height: 16px; border: 2px solid var(--brd); border-top-color: var(--gold); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.cs-txt { color: var(--muted); }
+
+/* Send button */
+.btn-send { width: 100%; padding: 14px; border: none; border-radius: 11px; background: linear-gradient(135deg,var(--gold),var(--gold2)); color: var(--navy); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .93rem; cursor: pointer; transition: all .28s; display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 6px; }
+.btn-send:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,.3); }
+.btn-send:disabled { opacity: .65; cursor: not-allowed; transform: none; }
+
+/* Success state */
+.cf-ok { display: none; text-align: center; padding: 50px 20px; }
+.cf-ok-icon { font-size: 3rem; margin-bottom: 16px; }
+.cf-ok-h { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--navy); margin-bottom: 8px; }
+.cf-ok-p { color: var(--txt2); font-size: .86rem; margin-bottom: 24px; line-height: 1.7; }
+.btn-again { display: inline-flex; align-items: center; gap: 6px; padding: 11px 26px; border: 1.5px solid var(--brd); border-radius: 100px; background: transparent; color: var(--txt2); font-family: 'Manrope', sans-serif; font-size: .82rem; font-weight: 600; cursor: pointer; transition: all .2s; }
+.btn-again:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Setup notice for admin */
+.setup-notice { background: rgba(201,168,76,.07); border: 1.5px solid rgba(201,168,76,.25); border-radius: 14px; padding: 20px 24px; margin-bottom: 28px; font-size: .8rem; color: var(--txt2); line-height: 1.7; }
+.setup-notice strong { color: var(--navy); }
+.setup-notice code { background: var(--bg2); padding: 1px 6px; border-radius: 4px; font-family: monospace; font-size: .79rem; color: var(--navy); border: 1px solid var(--brd); }
+
+@media(max-width:1024px) { .ch-hero { padding: 0 24px 40px; } }
+@media(max-width:640px) { .cf-row { grid-template-columns: 1fr; } .cf-box { padding: 28px 20px; } }
+</style>
+</head>
+<body>
+<div id="curtain"></div>
+
+<nav id="nav">
+  <a class="logo" href="/wealthmap/"><span>Wealth</span>Map</a>
+  <div class="nav-pills">
+    <a class="np" id="np-home" href="/wealthmap/">Home</a>
+    <a class="np" id="np-blogs" href="/wealthmap/blogs.html">Finance Blogs</a>
+    <a class="np" id="np-calculator" href="/wealthmap/calculator.html">Calculator</a>
+    <a class="np" id="np-products" href="/wealthmap/products.html">Products</a>
+    <a class="np" id="np-about" href="/wealthmap/about.html">About Us</a>
+    <a class="np" id="np-contact" href="/wealthmap/contact.html">Contact</a>
+  </div>
+  <div class="nav-right" id="navPublic">
+    <a class="btn-nr" href="/wealthmap/login.html">Sign In</a>
+    <a class="btn-ng" href="/wealthmap/login.html">Get Started →</a>
+  </div>
+  <div class="nav-user" id="navUser" style="display:none">
+    <div class="nav-pill-u" id="navPillU" onclick="toggleProfileDd()" title="Your profile">
+      <div class="nav-av" id="navAv">U</div>
+      <span class="nav-nm" id="navNm"></span>
+      <span style="font-size:.6rem;color:var(--muted);margin-left:3px">▾</span>
+    </div>
+    <span class="nav-adm" id="navAdm" style="display:none">Admin</span>
+    <button class="btn-so" id="navSignOut" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<div class="ch-hero">
+  <div class="ch-img"></div>
+  <div class="ch-ov"></div>
+  <div class="ch-content">
+    <div class="ch-ey">✉️ Get in touch</div>
+    <h1 class="ch-h1">We'd love to<br><em>hear from you</em></h1>
+  </div>
+</div>
+
+<div class="contact-body">
+
+  <!-- One-time setup notice — delete this block after adding your Formspree ID -->
+  <div class="setup-notice" id="setupNotice">
+    <strong>⚙️ One-time setup needed:</strong> To activate this form, sign up free at
+    <strong>formspree.io</strong> → New Form → copy your Form ID (looks like <code>xbljkpqr</code>)
+    → replace <code>YOUR_FORMSPREE_ID</code> in this page's script below. Then delete this notice block.
+    Messages will then be emailed to <strong>kasiviswa@hotmail.com</strong> AND saved to Firestore.
+  </div>
+
+  <div class="cf-box">
+    <div id="cfWrap">
+      <div class="cf-title">Send a message</div>
+      <div class="cf-subtitle">Fill in the form below and we'll get back to you within 24 hours.</div>
+
+      <div class="cf-row">
+        <div class="cf-grp">
+          <label class="cf-lbl">Your Name *</label>
+          <input class="cf-inp" id="cName" placeholder="Ravi Kumar">
+        </div>
+        <div class="cf-grp">
+          <label class="cf-lbl">Email Address *</label>
+          <input class="cf-inp" id="cEmail" type="email" placeholder="ravi@example.com">
+        </div>
+      </div>
+      <div class="cf-grp">
+        <label class="cf-lbl">Subject</label>
+        <input class="cf-inp" id="cSub" placeholder="How can we help?">
+      </div>
+      <div class="cf-grp">
+        <label class="cf-lbl">Message *</label>
+        <textarea class="cf-ta" id="cMsg" placeholder="Tell us more about what you need…"></textarea>
+      </div>
+
+      <button class="btn-send" id="sendBtn" onclick="sendMsg()">
+        <span id="sendTxt">✉️ Send Message</span>
+      </button>
+
+      <div class="cf-status">
+        <div class="cs-spin" id="csSpin"></div>
+        <div class="cs-txt" id="csTxt"></div>
+      </div>
+    </div>
+
+    <!-- Success screen -->
+    <div class="cf-ok" id="cfOk">
+      <div class="cf-ok-icon">🎉</div>
+      <div class="cf-ok-h">Message Sent!</div>
+      <div class="cf-ok-p">
+        Thank you for reaching out. Your message has been delivered to our inbox
+        and we'll reply to <strong id="okEmail"></strong> within 24 hours.
+      </div>
+      <button class="btn-again" onclick="resetMsg()">← Send another message</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fi">
+    <div class="foot-grid">
+      <div><div class="f-brand">Wealth<span>Map</span></div><div class="f-desc">A modern personal finance tracker for India.</div></div>
+      <div><div class="f-ct">Product</div><div class="f-links"><a class="f-lnk" href="/wealthmap/">Home</a><a class="f-lnk" href="/wealthmap/login.html">Sign In</a><a class="f-lnk" href="/wealthmap/">Dashboard</a><a class="f-lnk" href="/wealthmap/calculator.html">SIP Calculator</a></div></div>
+      <div><div class="f-ct">Resources</div><div class="f-links"><a class="f-lnk" href="/wealthmap/products.html">Digital Products</a><a class="f-lnk" href="/wealthmap/blogs.html">Finance Blogs</a><a class="f-lnk" href="/wealthmap/about.html">About Us</a></div></div>
+      <div><div class="f-ct">Company</div><div class="f-links"><a class="f-lnk" href="/wealthmap/contact.html">Contact Us</a><a class="f-lnk" href="#">Privacy Policy</a></div></div>
+    </div>
+    <div class="foot-bot"><span>© 2025 WealthMap · All rights reserved</span><span>Made with ♥ in Chennai, India</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span class="tic">✦</span><span id="toastMsg"></span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initNav } from '/wealthmap/shared.js';
+
+// ══════════════════════════════════════════════
+//  REPLACE THIS with your Formspree Form ID
+//  Sign up free: formspree.io → New Form → copy ID
+//  Example: 'xbljkpqr'
+// ══════════════════════════════════════════════
+const FORMSPREE_ID = 'YOUR_FORMSPREE_ID';
+const FORMSPREE_URL = `https://formspree.io/f/${FORMSPREE_ID}`;
+
+const FB = { apiKey:"AIzaSyAXHRiYdO-Y6nSWnT7K23mxfFYFu-JELls", authDomain:"wealthmap-705a6.firebaseapp.com", projectId:"wealthmap-705a6", storageBucket:"wealthmap-705a6.firebasestorage.app", messagingSenderId:"824878360619", appId:"1:824878360619:web:f45bb59b4f78e846bfe26e" };
+const fapp = initializeApp(FB);
+const db   = getFirestore(fapp);
+
+initNav('contact');
+
+// ── Helpers ──
+function setStatus(msg, spinning = false) {
+  document.getElementById('csTxt').textContent = msg;
+  document.getElementById('csSpin').style.display = spinning ? 'block' : 'none';
+}
+function clearErr() {
+  document.querySelectorAll('.cf-inp, .cf-ta').forEach(el => el.classList.remove('err'));
+}
+function markErr(id) {
+  document.getElementById(id).classList.add('err');
+  document.getElementById(id).focus();
+}
+
+// ── Send ──
+window.sendMsg = async function() {
+  clearErr();
+  const name    = document.getElementById('cName').value.trim();
+  const email   = document.getElementById('cEmail').value.trim();
+  const subject = document.getElementById('cSub').value.trim() || '(no subject)';
+  const message = document.getElementById('cMsg').value.trim();
+
+  // Validate
+  if (!name)                        { markErr('cName');  setStatus('Please enter your name.');           return; }
+  if (!email || !email.includes('@')){ markErr('cEmail'); setStatus('Please enter a valid email.');      return; }
+  if (!message)                     { markErr('cMsg');   setStatus('Please write a message.');           return; }
+
+  // UI: loading state
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  document.getElementById('sendTxt').textContent = 'Sending…';
+  setStatus('Sending your message…', true);
+
+  let emailOk = false, firestoreOk = false;
+
+  // ── Step 1: Send email via Formspree ──
+  if (FORMSPREE_ID !== 'YOUR_FORMSPREE_ID') {
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message })
+      });
+      emailOk = res.ok;
+    } catch(e) {
+      console.warn('Formspree error:', e);
+    }
+  } else {
+    // Formspree not configured — skip silently, still save to Firestore
+    console.warn('Formspree ID not set. Email delivery skipped.');
+    emailOk = true; // don't block the UX
+  }
+
+  // ── Step 2: Save to Firestore ──
+  try {
+    await addDoc(collection(db, 'contacts'), {
+      name, email, subject, message,
+      sentAt: serverTimestamp(),
+      read: false
+    });
+    firestoreOk = true;
+  } catch(e) {
+    console.warn('Firestore save error:', e);
+  }
+
+  // ── Step 3: Show result ──
+  btn.disabled = false;
+  document.getElementById('sendTxt').textContent = '✉️ Send Message';
+  setStatus('');
+
+  if (emailOk || firestoreOk) {
+    // Success
+    document.getElementById('okEmail').textContent = email;
+    document.getElementById('cfWrap').style.display = 'none';
+    document.getElementById('cfOk').style.display   = 'block';
+  } else {
+    // Both failed
+    setStatus('❌ Something went wrong. Please try again or email us directly.');
+  }
+};
+
+// ── Reset ──
+window.resetMsg = function() {
+  ['cName','cEmail','cSub','cMsg'].forEach(id => document.getElementById(id).value = '');
+  clearErr();
+  setStatus('');
+  document.getElementById('cfWrap').style.display = 'block';
+  document.getElementById('cfOk').style.display   = 'none';
+};
+</script>
+</body>
+</html>

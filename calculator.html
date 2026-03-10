@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIP Calculator — WealthMap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/wealthmap/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+body { opacity: 0; animation: pagein .45s var(--ease) .05s forwards; }
+@keyframes pagein { to { opacity: 1; } }
+
+.sip-hero { background: linear-gradient(135deg,#1a1a2e,#16213e); padding: 110px 52px 60px; text-align: center; }
+.sip-hero-ey { display: inline-flex; align-items: center; gap: 7px; background: rgba(201,168,76,.14); border: 1px solid rgba(201,168,76,.25); border-radius: 100px; padding: 5px 16px; font-size: .68rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+.sip-hero-h { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem,5vw,4rem); font-weight: 700; color: #fff; line-height: 1.05; margin-bottom: 14px; }
+.sip-hero-h em { font-style: italic; color: var(--gold); }
+.sip-hero-p { font-size: 1rem; color: rgba(255,255,255,.55); max-width: 520px; margin: 0 auto; line-height: 1.75; }
+
+.sip-body { max-width: 1100px; margin: 0 auto; padding: 52px 52px 90px; }
+
+/* MODE SWITCHER */
+.sip-mode { display: flex; background: #fff; border: 1.5px solid var(--brd); border-radius: 100px; padding: 4px; width: fit-content; margin: 0 auto 40px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+.sip-tab { padding: 10px 36px; border: none; border-radius: 100px; background: transparent; font-family: 'Manrope', sans-serif; font-size: .9rem; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .28s; }
+.sip-tab.active { background: linear-gradient(135deg,var(--gold),var(--gold2)); color: var(--navy); box-shadow: 0 4px 14px rgba(201,168,76,.35); }
+
+/* CALC CARD */
+.calc-card { background: #fff; border-radius: var(--rx); border: 1.5px solid var(--brd); box-shadow: 0 8px 40px rgba(0,0,0,.07); overflow: hidden; }
+.calc-inner { display: grid; grid-template-columns: 1.15fr 1fr; min-height: 440px; }
+.calc-left { padding: 44px; border-right: 1px solid var(--brd); }
+.calc-right { padding: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+
+/* SLIDER ROW */
+.sl-row { margin-bottom: 30px; }
+.sl-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.sl-lbl { font-size: .92rem; color: var(--txt2); font-weight: 500; }
+.sl-val { display: flex; align-items: center; gap: 4px; background: rgba(201,168,76,.1); border: 1.5px solid rgba(201,168,76,.3); border-radius: 8px; padding: 5px 12px; }
+.sl-cur { font-size: .82rem; font-weight: 700; color: var(--gold); }
+.sl-inp-box { border: none; background: transparent; font-family: 'Manrope', sans-serif; font-size: .95rem; font-weight: 700; color: var(--gold); width: 80px; text-align: right; outline: none; }
+.sl-inp-box::-webkit-inner-spin-button { -webkit-appearance: none; }
+.sl-unit { font-size: .8rem; font-weight: 700; color: var(--gold); margin-left: 2px; }
+input[type=range].sl-range { width: 100%; -webkit-appearance: none; height: 6px; border-radius: 3px; outline: none; cursor: pointer; background: linear-gradient(90deg, var(--gold) var(--pct, 30%), #eef1f7 var(--pct, 30%)); }
+input[type=range].sl-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2.5px solid var(--gold); box-shadow: 0 2px 8px rgba(201,168,76,.35); cursor: grab; }
+input[type=range].sl-range::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+input[type=range].sl-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 2.5px solid var(--gold); box-shadow: 0 2px 8px rgba(201,168,76,.35); cursor: grab; }
+
+/* LEGEND */
+.sip-legend { display: flex; gap: 18px; justify-content: center; }
+.leg { display: flex; align-items: center; gap: 6px; font-size: .76rem; color: var(--txt2); font-weight: 500; }
+.leg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* RESULTS */
+.sip-results { border-top: 1px solid var(--brd); background: var(--bg); padding: 28px 44px; display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 20px; align-items: center; }
+.sr-l { font-size: .72rem; color: var(--muted); letter-spacing: .5px; margin-bottom: 3px; }
+.sr-v { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--navy); }
+.sr-v.green { color: var(--gold); } .sr-v.teal { color: var(--navy); }
+.btn-invest { padding: 13px 30px; border: none; border-radius: 12px; background: linear-gradient(135deg,var(--gold),var(--gold2)); color: var(--navy); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .88rem; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; transition: all .28s; box-shadow: 0 6px 20px rgba(201,168,76,.3); letter-spacing: .5px; text-transform: uppercase; }
+.btn-invest:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,168,76,.45); }
+
+/* INFO CARDS */
+.sip-info { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 28px; }
+.si-card { background: #fff; border: 1.5px solid var(--brd); border-radius: var(--r); padding: 24px; text-align: center; transition: all .3s var(--ease); }
+.si-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 12px 30px rgba(201,168,76,.1); }
+.si-icon { font-size: 1.6rem; margin-bottom: 10px; }
+.si-t { font-family: 'Playfair Display', serif; font-size: .97rem; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+.si-d { font-size: .78rem; color: var(--txt2); line-height: 1.6; }
+
+@media(max-width:1024px) {
+  .sip-body { padding: 40px 24px 80px; }
+  .sip-hero { padding: 100px 24px 50px; }
+  .calc-inner { grid-template-columns: 1fr; }
+  .calc-right { border-top: 1px solid var(--brd); border-right: none; }
+  .sip-results { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sip-info { grid-template-columns: 1fr; }
+}
+@media(max-width:640px) {
+  .sip-results { grid-template-columns: 1fr; }
+  .sip-tab { padding: 10px 24px; }
+}
+</style>
+</head>
+<body>
+<div id="curtain"></div>
+
+<nav id="nav">
+  <a class="logo" href="/wealthmap/"><span>Wealth</span>Map</a>
+  <div class="nav-pills">
+    <a class="np" id="np-home" href="/wealthmap/">Home</a>
+    <a class="np" id="np-blogs" href="/wealthmap/blogs.html">Finance Blogs</a>
+    <a class="np" id="np-calculator" href="/wealthmap/calculator.html">Calculator</a>
+    <a class="np" id="np-products" href="/wealthmap/products.html">Products</a>
+    <a class="np" id="np-about" href="/wealthmap/about.html">About Us</a>
+    <a class="np" id="np-contact" href="/wealthmap/contact.html">Contact</a>
+  </div>
+  <div class="nav-right" id="navPublic">
+    <a class="btn-nr" href="/wealthmap/login.html">Sign In</a>
+    <a class="btn-ng" href="/wealthmap/login.html">Get Started →</a>
+  </div>
+  <div class="nav-user" id="navUser" style="display:none">
+    <div class="nav-pill-u" id="navPillU" onclick="toggleProfileDd()" title="Your profile">
+      <div class="nav-av" id="navAv">U</div>
+      <span class="nav-nm" id="navNm"></span>
+      <span style="font-size:.6rem;color:var(--muted);margin-left:3px">▾</span>
+    </div>
+    <span class="nav-adm" id="navAdm" style="display:none">Admin</span>
+    <button class="btn-so" id="navSignOut" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<div class="sip-hero">
+  <div class="sip-hero-ey">🧮 Investment Calculator</div>
+  <h1 class="sip-hero-h">Plan your <em>wealth</em> with precision</h1>
+  <p class="sip-hero-p">Calculate how your SIP or lump sum investment grows over time with our interactive calculator.</p>
+</div>
+
+<div class="sip-body">
+  <div class="sip-mode">
+    <button class="sip-tab active" id="sipTabBtn" onclick="setSipMode('sip')">SIP</button>
+    <button class="sip-tab" id="lsTabBtn" onclick="setSipMode('lumpsum')">Lumpsum</button>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-inner">
+      <div class="calc-left">
+        <!-- SIP SLIDERS -->
+        <div id="sipSliders">
+          <div class="sl-row">
+            <div class="sl-top">
+              <span class="sl-lbl">Monthly investment</span>
+              <div class="sl-val"><span class="sl-cur">₹</span><input class="sl-inp-box" id="sipAmt" type="number" value="25000" min="500" max="1000000" step="500" oninput="syncSlider('sipAmt','slSipAmt',500,1000000);calc()"></div>
+            </div>
+            <input type="range" class="sl-range" id="slSipAmt" min="500" max="1000000" step="500" value="25000" style="--pct:2.4%" oninput="syncInput('slSipAmt','sipAmt',500,1000000);calc()">
+          </div>
+          <div class="sl-row">
+            <div class="sl-top">
+              <span class="sl-lbl">Expected return rate (p.a)</span>
+              <div class="sl-val"><input class="sl-inp-box" id="sipRate" type="number" value="12" min="1" max="30" step="0.5" style="width:50px" oninput="syncSlider('sipRate','slSipRate',1,30);calc()"><span class="sl-unit">%</span></div>
+            </div>
+            <input type="range" class="sl-range" id="slSipRate" min="1" max="30" step="0.5" value="12" style="--pct:37.9%" oninput="syncInput('slSipRate','sipRate',1,30);calc()">
+          </div>
+          <div class="sl-row">
+            <div class="sl-top">
+              <span class="sl-lbl">Time period</span>
+              <div class="sl-val"><input class="sl-inp-box" id="sipYrs" type="number" value="10" min="1" max="40" step="1" style="width:40px" oninput="syncSlider('sipYrs','slSipYrs',1,40);calc()"><span class="sl-unit">Yr</span></div>
+            </div>
+            <input type="range" class="sl-range" id="slSipYrs" min="1" max="40" step="1" value="10" style="--pct:23.1%" oninput="syncInput('slSipYrs','sipYrs',1,40);calc()">
+          </div>
+        </div>
+        <!-- LUMPSUM SLIDERS -->
+        <div id="lsSliders" style="display:none">
+          <div class="sl-row">
+            <div class="sl-top">
+              <span class="sl-lbl">Total investment</span>
+              <div class="sl-val"><span class="sl-cur">₹</span><input class="sl-inp-box" id="lsAmt" type="number" value="500000" min="1000" max="50000000" step="1000" oninput="syncSlider('lsAmt','slLsAmt',1000,50000000);calc()"></div>
+            </div>
+            <input type="range" class="sl-range" id="slLsAmt" min="1000" max="50000000" step="1000" value="500000" style="--pct:1%" oninput="syncInput('slLsAmt','lsAmt',1000,50000000);calc()">
+          </div>
+          <div class="sl-row">
+            <div class="sl-top">
+              <span class="sl-lbl">Expected return rate (p.a)</span>
+              <div class="sl-val"><input class="sl-inp-box" id="lsRate" type="number" value="12" min="1" max="30" step="0.5" style="width:50px" oninput="syncSlider('lsRate','slLsRate',1,30);calc()"><span class="sl-unit">%</span></div>
+            </div>
+            <input type="range" class="sl-range" id="slLsRate" min="1" max="30" step="0.5" value="12" style="--pct:37.9%" oninput="syncInput('slLsRate','lsRate',1,30);calc()">
+          </div>
+          <div class="sl-row">
+            <div class="sl-top">
+              <span class="sl-lbl">Time period</span>
+              <div class="sl-val"><input class="sl-inp-box" id="lsYrs" type="number" value="10" min="1" max="40" step="1" style="width:40px" oninput="syncSlider('lsYrs','slLsYrs',1,40);calc()"><span class="sl-unit">Yr</span></div>
+            </div>
+            <input type="range" class="sl-range" id="slLsYrs" min="1" max="40" step="1" value="10" style="--pct:23.1%" oninput="syncInput('slLsYrs','lsYrs',1,40);calc()">
+          </div>
+        </div>
+      </div>
+      <!-- CHART -->
+      <div class="calc-right">
+        <div class="sip-legend">
+          <div class="leg"><div class="leg-dot" style="background:#e8ecf5"></div>Invested amount</div>
+          <div class="leg"><div class="leg-dot" style="background:var(--gold)"></div>Est. returns</div>
+        </div>
+        <canvas id="sipChart" width="220" height="220" style="max-width:220px;max-height:220px;"></canvas>
+      </div>
+    </div>
+    <!-- RESULTS -->
+    <div class="sip-results">
+      <div class="sr-item"><div class="sr-l">Invested amount</div><div class="sr-v" id="srInvested">₹30,00,000</div></div>
+      <div class="sr-item"><div class="sr-l">Est. returns</div><div class="sr-v green" id="srReturns">₹26,00,897</div></div>
+      <div class="sr-item"><div class="sr-l">Total value</div><div class="sr-v teal" id="srTotal">₹56,00,897</div></div>
+      <button class="btn-invest" onclick="resetCalc()">↺ RESET</button>
+    </div>
+  </div>
+
+  <div class="sip-info">
+    <div class="si-card reveal"><div class="si-icon">📈</div><div class="si-t">What is SIP?</div><div class="si-d">A Systematic Investment Plan lets you invest a fixed amount every month in mutual funds, averaging out market volatility over time.</div></div>
+    <div class="si-card reveal rd1"><div class="si-icon">💰</div><div class="si-t">What is Lumpsum?</div><div class="si-d">A one-time bulk investment, ideal when you have a large amount ready to deploy, especially when markets are undervalued.</div></div>
+    <div class="si-card reveal rd2"><div class="si-icon">⚡</div><div class="si-t">Power of Compounding</div><div class="si-d">Starting early is the biggest advantage. Even small amounts grow into significant wealth with time and consistent returns.</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="fi">
+    <div class="foot-grid">
+      <div><div class="f-brand">Wealth<span>Map</span></div><div class="f-desc">A modern personal finance tracker for India. Track assets, liabilities, and net worth elegantly.</div></div>
+      <div><div class="f-ct">Product</div><div class="f-links"><a class="f-lnk" href="/wealthmap/">Home</a><a class="f-lnk" href="/wealthmap/login.html">Sign In</a><a class="f-lnk" href="/wealthmap/">Dashboard</a><a class="f-lnk" href="/wealthmap/calculator.html">SIP Calculator</a></div></div>
+      <div><div class="f-ct">Resources</div><div class="f-links"><a class="f-lnk" href="#">Finance Blog</a><a class="f-lnk" href="#">Net Worth Guide</a><a class="f-lnk" href="#">Investment Tips</a></div></div>
+      <div><div class="f-ct">Company</div><div class="f-links"><a class="f-lnk" href="/wealthmap/contact.html">Contact Us</a><a class="f-lnk" href="#">Privacy Policy</a><a class="f-lnk" href="#">Terms of Use</a></div></div>
+    </div>
+    <div class="foot-bot"><span>© 2025 WealthMap · All rights reserved</span><span>Made with ♥ in Chennai, India</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span class="tic">✦</span><span id="toastMsg"></span></div>
+
+<script type="module">
+import { initNav, initReveal, fmtS } from '/wealthmap/shared.js';
+initNav('calculator');
+initReveal();
+
+let sipChart = null;
+let mode = 'sip';
+
+window.setSipMode = function(m) {
+  mode = m;
+  document.getElementById('sipSliders').style.display = m === 'sip' ? 'block' : 'none';
+  document.getElementById('lsSliders').style.display = m === 'lumpsum' ? 'block' : 'none';
+  document.getElementById('sipTabBtn').classList.toggle('active', m === 'sip');
+  document.getElementById('lsTabBtn').classList.toggle('active', m === 'lumpsum');
+  calc();
+};
+
+window.syncInput = function(slId, inpId, mn, mx) {
+  const v = parseFloat(document.getElementById(slId).value);
+  document.getElementById(inpId).value = v;
+  updateTrack(slId, v, mn, mx);
+};
+window.syncSlider = function(inpId, slId, mn, mx) {
+  let v = parseFloat(document.getElementById(inpId).value) || mn;
+  v = Math.max(mn, Math.min(mx, v));
+  document.getElementById(inpId).value = v;
+  document.getElementById(slId).value = v;
+  updateTrack(slId, v, mn, mx);
+};
+function updateTrack(slId, v, mn, mx) {
+  const pct = ((v - mn) / (mx - mn) * 100).toFixed(1) + '%';
+  document.getElementById(slId).style.setProperty('--pct', pct);
+}
+
+window.calc = function() { mode === 'sip' ? calcSip() : calcLs(); };
+
+function calcSip() {
+  const P = +document.getElementById('sipAmt').value || 0;
+  const r = (+document.getElementById('sipRate').value) / 100 / 12;
+  const n = (+document.getElementById('sipYrs').value) * 12;
+  const total = r > 0 ? P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r) : P * n;
+  const invested = P * n;
+  updateResults(invested, total - invested, total);
+  drawChart(invested, total - invested);
+}
+function calcLs() {
+  const P = +document.getElementById('lsAmt').value || 0;
+  const r = (+document.getElementById('lsRate').value) / 100;
+  const n = +document.getElementById('lsYrs').value;
+  const total = P * Math.pow(1 + r, n);
+  updateResults(P, total - P, total);
+  drawChart(P, total - P);
+}
+function updateResults(inv, ret, tot) {
+  document.getElementById('srInvested').textContent = fmtS(inv);
+  document.getElementById('srReturns').textContent = fmtS(ret);
+  document.getElementById('srTotal').textContent = fmtS(tot);
+}
+function drawChart(invested, returns) {
+  const ctx = document.getElementById('sipChart').getContext('2d');
+  if (sipChart) sipChart.destroy();
+  sipChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Invested amount', 'Est. returns'],
+      datasets: [{ data: [Math.max(invested, 0), Math.max(returns, 0)], backgroundColor: ['#e8ecf5', '#c9a84c'], borderColor: '#fff', borderWidth: 4, hoverOffset: 8 }]
+    },
+    options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${fmtS(c.parsed)}` } } } }
+  });
+}
+
+window.resetCalc = function() {
+  if (mode === 'sip') {
+    document.getElementById('sipAmt').value = 0;
+    document.getElementById('sipRate').value = 0;
+    document.getElementById('sipYrs').value = 0;
+    ['slSipAmt','slSipRate','slSipYrs'].forEach(id => {
+      document.getElementById(id).value = document.getElementById(id).min;
+    });
+    updateTrack('slSipAmt', 500, 500, 1000000);
+    updateTrack('slSipRate', 1, 1, 30);
+    updateTrack('slSipYrs', 1, 1, 40);
+  } else {
+    document.getElementById('lsAmt').value = 0;
+    document.getElementById('lsRate').value = 0;
+    document.getElementById('lsYrs').value = 0;
+    ['slLsAmt','slLsRate','slLsYrs'].forEach(id => {
+      document.getElementById(id).value = document.getElementById(id).min;
+    });
+    updateTrack('slLsAmt', 1000, 1000, 50000000);
+    updateTrack('slLsRate', 1, 1, 30);
+    updateTrack('slLsYrs', 1, 1, 40);
+  }
+  updateResults(0, 0, 0);
+  drawChart(1, 0);
+};
+
+// init tracks
+updateTrack('slSipAmt', 25000, 500, 1000000);
+updateTrack('slSipRate', 12, 1, 30);
+updateTrack('slSipYrs', 10, 1, 40);
+updateTrack('slLsAmt', 500000, 1000, 50000000);
+updateTrack('slLsRate', 12, 1, 30);
+updateTrack('slLsYrs', 10, 1, 40);
+calcSip();
+</script>
+</body>
+</html>

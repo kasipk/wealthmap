@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — WealthMap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/wealthmap/style.css">
+<style>
+body { opacity: 0; animation: pagein .45s var(--ease) .05s forwards; min-height: 100vh; display: flex; flex-direction: column; }
+@keyframes pagein { to { opacity: 1; } }
+.login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 100px 20px 60px; position: relative; overflow: hidden; background: var(--bg); }
+.login-bg { position: absolute; inset: 0; background: url('https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=1600&q=80') center/cover no-repeat; opacity: .04; }
+.login-grad { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.06),transparent 70%); }
+.login-box { width: 450px; max-width: 100%; background: #fff; border: 1.5px solid var(--brd); border-radius: var(--rx); padding: 50px 46px; position: relative; z-index: 2; box-shadow: 0 20px 60px rgba(0,0,0,.09); }
+.lb-logo { font-family: 'Playfair Display', serif; font-size: 1.55rem; font-weight: 700; color: var(--navy); text-align: center; margin-bottom: 3px; }
+.lb-logo span { color: var(--gold); }
+.lb-tag { text-align: center; font-size: .7rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
+.lb-tabs { display: flex; background: var(--bg2); border: 1.5px solid var(--brd); border-radius: 11px; padding: 3px; gap: 3px; margin-bottom: 24px; }
+.lb-tab { flex: 1; padding: 9px; border: none; border-radius: 8px; background: transparent; font-family: 'Manrope', sans-serif; font-size: .84rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .25s; }
+.lb-tab.active { background: #fff; color: var(--navy); font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.lb-lbl { display: block; font-size: .66rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 7px; }
+.lb-inp { width: 100%; padding: 13px 17px; background: var(--bg); border: 1.5px solid var(--brd); border-radius: 11px; color: var(--navy); font-family: 'Manrope', sans-serif; font-size: .91rem; outline: none; transition: all .25s; margin-bottom: 16px; }
+.lb-inp::placeholder { color: var(--muted); }
+.lb-inp:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(201,168,76,.1); }
+.lb-btn { width: 100%; padding: 14px; border: none; border-radius: 11px; background: linear-gradient(135deg,var(--gold),var(--gold2)); color: var(--navy); font-family: 'Manrope', sans-serif; font-weight: 700; font-size: .93rem; cursor: pointer; transition: all .28s; box-shadow: 0 8px 26px rgba(201,168,76,.25); }
+.lb-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(201,168,76,.4); }
+.lb-err { font-size: .79rem; min-height: 18px; text-align: center; margin-bottom: 8px; }
+.lb-err.e { color: var(--red); } .lb-err.ok { color: var(--green); }
+.lb-forgot { display: block; text-align: center; margin-top: 13px; font-size: .77rem; color: var(--muted); cursor: pointer; border: none; background: none; font-family: 'Manrope', sans-serif; transition: color .2s; width: 100%; }
+.lb-forgot:hover { color: var(--gold); }
+.lb-back { display: flex; align-items: center; justify-content: center; gap: 5px; margin-top: 16px; font-size: .77rem; color: var(--muted); text-decoration: none; transition: color .2s; justify-content: center; }
+.lb-back:hover { color: var(--navy); }
+</style>
+</head>
+<body>
+<div id="curtain"></div>
+<nav id="nav">
+  <a class="logo" href="/wealthmap/"><span>Wealth</span>Map</a>
+  <div class="nav-pills">
+    <a class="np" id="np-home" href="/wealthmap/">Home</a>
+    <a class="np" id="np-blogs" href="/wealthmap/blogs.html">Finance Blogs</a>
+    <a class="np" id="np-calculator" href="/wealthmap/calculator.html">Calculator</a>
+    <a class="np" id="np-products" href="/wealthmap/products.html">Products</a>
+    <a class="np" id="np-about" href="/wealthmap/about.html">About Us</a>
+    <a class="np" id="np-contact" href="/wealthmap/contact.html">Contact</a>
+  </div>
+  <div class="nav-right" id="navPublic">
+    <a class="btn-nr" href="/wealthmap/login.html">Sign In</a>
+    <a class="btn-ng" href="/wealthmap/login.html">Get Started →</a>
+  </div>
+  <div class="nav-user" id="navUser" style="display:none">
+    <div class="nav-pill-u" id="navPillU" onclick="toggleProfileDd()" title="Your profile">
+      <div class="nav-av" id="navAv">U</div>
+      <span class="nav-nm" id="navNm"></span>
+      <span style="font-size:.6rem;color:var(--muted);margin-left:3px">▾</span>
+    </div>
+    <span class="nav-adm" id="navAdm" style="display:none">Admin</span>
+    <button class="btn-so" id="navSignOut" style="display:none">Sign out</button>
+  </div>
+</nav>
+
+<div class="login-wrap">
+  <div class="login-bg"></div><div class="login-grad"></div>
+  <div class="login-box">
+    <div class="lb-logo">Wealth<span>Map</span></div>
+    <div class="lb-tag">Personal Finance Tracker</div>
+    <div class="lb-tabs">
+      <button class="lb-tab active" id="ltab-in">Sign In</button>
+      <button class="lb-tab" id="ltab-up">Sign Up</button>
+    </div>
+    <label class="lb-lbl">Email Address</label>
+    <input class="lb-inp" id="lEmail" type="email" placeholder="you@example.com">
+    <label class="lb-lbl">Password</label>
+    <input class="lb-inp" id="lPass" type="password" placeholder="••••••••">
+    <div class="lb-err" id="lErr"></div>
+    <button class="lb-btn" id="lSubmit">🔐 Sign In</button>
+    <button class="lb-forgot" id="lForgot">Forgot password?</button>
+    <a class="lb-back" href="/wealthmap/">← Back to Home</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="tic">✦</span><span id="toastMsg"></span></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { initNav } from '/wealthmap/shared.js';
+
+const FB = { apiKey:"AIzaSyAXHRiYdO-Y6nSWnT7K23mxfFYFu-JELls", authDomain:"wealthmap-705a6.firebaseapp.com", projectId:"wealthmap-705a6", storageBucket:"wealthmap-705a6.firebasestorage.app", messagingSenderId:"824878360619", appId:"1:824878360619:web:f45bb59b4f78e846bfe26e" };
+const app = initializeApp(FB);
+const auth = getAuth(app);
+
+// If already logged in, go to dashboard
+onAuthStateChanged(auth, u => { if (u) window.location.href = '/wealthmap/'; });
+
+initNav('login');
+
+const ti = document.getElementById('ltab-in');
+const tu = document.getElementById('ltab-up');
+const sb = document.getElementById('lSubmit');
+const fb = document.getElementById('lForgot');
+
+function setErr(m) { const el = document.getElementById('lErr'); el.className = 'lb-err e'; el.textContent = m; }
+function setOk(m) { const el = document.getElementById('lErr'); el.className = 'lb-err ok'; el.textContent = m; }
+function fErr(c) { return { 'auth/invalid-email':'Invalid email.', 'auth/user-not-found':'No account found.', 'auth/wrong-password':'Incorrect password.', 'auth/email-already-in-use':'Account already exists.', 'auth/weak-password':'Password too weak.', 'auth/invalid-credential':'Invalid email or password.', 'auth/too-many-requests':'Too many attempts. Try again later.' }[c] || 'Something went wrong.'; }
+
+async function doLogin() {
+  const e = document.getElementById('lEmail').value.trim(), p = document.getElementById('lPass').value;
+  setErr('');
+  try { await signInWithEmailAndPassword(auth, e, p); window.location.href = '/wealthmap/'; }
+  catch(er) { setErr(fErr(er.code)); }
+}
+async function doSignup() {
+  const e = document.getElementById('lEmail').value.trim(), p = document.getElementById('lPass').value;
+  setErr('');
+  if (p.length < 6) { setErr('Password needs 6+ characters.'); return; }
+  try { await createUserWithEmailAndPassword(auth, e, p); window.location.href = '/wealthmap/'; }
+  catch(er) { setErr(fErr(er.code)); }
+}
+
+ti.onclick = () => { ti.classList.add('active'); tu.classList.remove('active'); sb.textContent = '🔐 Sign In'; sb.onclick = doLogin; fb.style.display = 'block'; document.getElementById('lErr').textContent = ''; };
+tu.onclick = () => { tu.classList.add('active'); ti.classList.remove('active'); sb.textContent = '✨ Create Account'; sb.onclick = doSignup; fb.style.display = 'none'; document.getElementById('lErr').textContent = ''; };
+sb.onclick = doLogin;
+fb.onclick = async () => {
+  const e = document.getElementById('lEmail').value.trim();
+  if (!e) { setErr('Enter your email first.'); return; }
+  try { await sendPasswordResetEmail(auth, e); setOk('Reset email sent!'); }
+  catch(er) { setErr(fErr(er.code)); }
+};
+document.getElementById('lPass').addEventListener('keydown', e => { if (e.key === 'Enter') sb.click(); });
+</script>
+</body>
+</html>
